@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html style="font-size: 100px;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0" />
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="x5-fullscreen" content="true">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <title>登录</title>
+    <link href="${ctxPath}/assets/lib/iconfont/iconfont.css" rel="stylesheet" />
+    <link href="${ctxPath}/assets/css/login.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 500px)" href="${ctxPath}/assets/css/login_h5.css" />
+    <script src="${ctxPath}/assets/lib/jquery/jquery-1.11.3.min.js"></script>
+    <script>
+        $(document).ready(function (){
+//            var whdef = 100/1080;// 表示1920的设计图,使用100PX的默认值
+//            var wH = window.innerHeight;// 当前窗口的高度
+//            var wW = window.innerWidth;// 当前窗口的宽度
+//            var rem = wH * whdef;// 以默认比例值乘以当前窗口宽度,得到该宽度下的相应FONT-SIZE值
+//            $('html').css('font-size', rem + "px");
+
+            if($('.tips').html()!=""){
+                $('.login-warning').addClass('show')
+            } else {
+                $('.login-warning').removeClass('show')
+            }
+        });
+    </script>
+    <script>if (window.top !== window.self) {
+        window.top.location = window.location;
+    }</script>
+</head>
+<body>
+<div class="login-bg">
+    <div class="login-box">
+        <div class="login-content">
+            <p class="login-content-title">基于BS的超市管理信息系统</p>
+            <span class="tips" hidden>${tips!}</span>
+            <p class="login-warning" >
+                <i class="iconfont iconwarning"></i>
+                <span>${tips!}</span>
+            </p>
+            <form class="m-t" role="form" action="${ctxPath}/login" method="post">
+                <input type="hidden" name="redirectUrl" value="${redirectUrl!}">
+                <p class="login-content-input"><span>用户名</span><input class="login-content-username"  name="userName" type="text" placeholder="请输入用户名"/></p>
+                <p class="login-content-input"><span>密码</span><input class="login-content-password" name="password" type="password" placeholder="请输入密码"/></p>
+                <!-- <p class="login-remember-user"><input type="checkbox" /><span>记住用户</span></p> -->
+                <p class="login-content-btn"><input type="submit" class="login-submit" value="登&nbsp&nbsp录"/></p>
+            </form>
+        </div>
+       <!-- <p class="login-bottom">注册新用户请联系用户管理员001xxx&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp电话 12345678910</p>-->
+    </div>
+</div>
+</body>
+</html>

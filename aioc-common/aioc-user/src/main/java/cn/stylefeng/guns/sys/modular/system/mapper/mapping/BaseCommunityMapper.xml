@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.stylefeng.guns.sys.modular.system.mapper.BaseCommunityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.stylefeng.guns.sys.modular.system.entity.BaseCommunity">
+        <id column="ID" property="id"/>
+        <result column="CODE" property="code"/>
+        <result column="NAME" property="name"/>
+        <result column="PARENT_CODE" property="parentCode"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, CODE, NAME, PARENT_CODE,type
+    </sql>
+    <select id="communityTreeList" resultType="cn.stylefeng.guns.base.pojo.node.ZTreeNode">
+	    select code "id",parent_code
+		"pId",name as "name",(case when (parent_code=0 or parent_code is null) then 'true'
+		else 'false' end) "open" from base_community
+	</select>
+
+    <select id="communityTreeListByRoleId" resultType="cn.stylefeng.guns.base.pojo.node.ZTreeNode">
+        SELECT
+        r.code "id",
+        PARENT_CODE "pId",
+        NAME AS "name",
+        (
+        CASE
+        WHEN (PARENT_CODE = 0 OR PARENT_CODE IS NULL) THEN
+        'true'
+        ELSE
+        'false'
+        END
+        ) "open",
+        (
+        CASE
+        WHEN (r1.code = 0 OR r1.code IS NULL) THEN
+        'false'
+        ELSE
+        'true'
+        END
+        ) "checked"
+
+        FROM
+        base_community r
+        LEFT JOIN (
+        SELECT
+        code
+        FROM
+        base_community
+        WHERE
+        code IN
+        <foreach collection="array" index="index" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+        ) r1 ON r.code = r1.code
+        ORDER BY
+        parent_code ASC
+    </select>
+    <select id="selectCommunityByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select communityCode as code from user_rela_community
+        where userId=#{userId}
+    </select>
+
+    <select id="communitySubTreeList"  parameterType="java.lang.String" resultType="cn.stylefeng.guns.base.pojo.node.ZTreeNode">
+        select t4.`CODE` id,t4.name, 0  pid,(case when (t4.parent_code=0 or t4.parent_code is null) then 'true'
+		else 'false' end) "open" from base_community t4  WHERE t4.CODE=#{parentCode}
+		union
+       select t3.`CODE` id,t3.name, t3.PARENT_CODE pid,(case when (t3.parent_code=0 or t3.parent_code is null) then 'true'
+		else 'false' end) "open" from (
+        select t1.`CODE`,
+        if(find_in_set(PARENT_CODE, @pids) &gt; 0, @pids := concat(@pids, ',', `CODE`), 0) as ischild,
+        t1.`NAME`,t1.PARENT_CODE
+        from (select `CODE`,PARENT_CODE,`NAME` from base_community t order by PARENT_CODE,t.`CODE`) t1,
+        (select @pids := #{parentCode}) t2
+        ) t3 where ischild != 0
+	</select>
+
+    <select id="selectAllChildren" parameterType="java.lang.String" resultType="java.lang.String">
+        select t3.`CODE` from (
+        select t1.`CODE`,
+        if(find_in_set(PARENT_CODE, @pids) &gt; 0, @pids := concat(@pids, ',', `CODE`), 0) as ischild,
+        t1.`NAME`
+        from (select `CODE`,PARENT_CODE,`NAME` from base_community t order by PARENT_CODE,t.`CODE`) t1,
+        (select @pids := #{parentCode}) t2
+        ) t3 where ischild != 0
+    </select>
+
+    <select id="selectByparent" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_community
+        where
+        parent_code=#{parentCode}
+    </select>
+
+</mapper>

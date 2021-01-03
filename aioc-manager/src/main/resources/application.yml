@@ -1,0 +1,52 @@
+server:
+  port: 8083
+  max-http-header-size: 10240
+  servlet:
+    context-path: /manager
+
+beetl:
+  resource-auto-check: true         #热加载beetl模板，开发时候用
+
+spring:
+  profiles:
+    active: "@spring.active@"
+  mvc:
+    view:
+      prefix: /pages
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  jta:
+    atomikos:
+      properties:
+        max-actives: -1
+    log-dir: ./manager-log
+
+mybatis-plus:
+  typeAliasesPackage: cn.stylefeng.guns.modular.system.model
+  mapper-locations:
+    - classpath*:cn/stylefeng/guns/**/mapping/*.xml
+
+log:
+  path: _app_logs
+
+
+
+#access_key: E41305C4F55081C2B9B6889D84AEF7FB
+#secret_key: D46561AB04A0A549464640D7F28F74A0
+#bucket_name: tiaojin-aioc
+#endpoint: s3.cn-north-1.jdcloud-oss.com
+access_key: 950CB82DC8CACD5481B7E37F61EEC783
+secret_key: B56FE93F1659C8557B09E4D72312D4FE
+bucket_name: aioc-tianjin
+endpoint: s3.cn-north-1.jdcloud-oss.com
+
+#The config for HttpClient
+http:
+  maxTotal: 300
+  defaultMaxPerRoute: 50
+  connectTimeout: 1000
+  connectionRequestTimeout: 500
+  socketTimeout: 5000
+  staleConnectionCheckEnabled: true
